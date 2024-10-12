@@ -1,0 +1,7 @@
+@import './base.css';
+@import './vant.css';
+
+#app {
+  max-width: var(--app-max-width);
+  margin: 0 auto;
+}
