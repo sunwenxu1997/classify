@@ -5,10 +5,9 @@ const modules = import.meta.glob('/public/分类/**')
 const classifications = reactive([]) // 分类名
 const items = reactive([]) // 图片
 const activeIndex = ref(0)
-
 Object.keys(modules).forEach((path) => {
   let className = path.split('/').slice(-2)[0] // 一级分类名称
-  let imgPath = path.split('/public')[1] // 图片路径
+  let imgPath = import.meta.env.BASE_URL + path.split('/public')[1] // 图片路径
   let text = path.split('/').slice(-1)[0].split('.')[0] // 图片名称
   let item = { className, imgPath, text }
   if (!classifications.includes(className)) classifications.push(className)
