@@ -38,7 +38,11 @@ onActivated(() => {
 // 处理加工好的分类数据
 const classificationsTree = computed(() => {
   return classifications.map((text) => {
-    return { text, children: items.filter((item) => item.className === text) }
+    return {
+      text,
+      children: items.filter((item) => item.className === text),
+      dot: items.some((item) => item.className === text && item.like)
+    }
   })
 })
 // 点击喜欢
