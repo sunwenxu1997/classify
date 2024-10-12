@@ -2,7 +2,8 @@
 :root,:host{
     --van-tabbar-item-active-color: var(--app-theme-color) !important;
     --van-sidebar-selected-border-color: var(--app-theme-color) !important;
+    /* --van-sidebar-width: 80px !important; */
 }
 .van-sidebar.van-tree-select__nav{
-    max-width: 100px !important;
+    flex: none !important;
 }
