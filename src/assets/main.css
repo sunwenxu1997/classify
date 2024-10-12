@@ -59,7 +59,6 @@
  box-sizing: border-box;
 }
 .item .like {
- top: -2px;
- right: 3px;
+ right: 0px;
  color: var(--app-theme-color);
 }

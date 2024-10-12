@@ -75,7 +75,7 @@ const clickItem = (item) => {
                   <van-loading type="spinner" size="20" />
                 </template>
               </van-image>
-              <div class="text">{{ item.text }}</div>
+              <div class="text" v-if="item.text">{{ item.text }}</div>
             </div>
           </div>
         </div>
