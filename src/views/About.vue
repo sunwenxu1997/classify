@@ -42,6 +42,6 @@ const clickItem = (item) => {
 
 <style scoped>
 .items-box {
-  --img-width: clamp(5rem, calc(100vw / 3.5), 200px);
+  --img-width: clamp(5rem, calc(100vw / 3.8), 200px);
 }
 </style>
