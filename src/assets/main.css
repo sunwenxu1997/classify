@@ -49,11 +49,14 @@
  left: 0;
  background-color: var(--app-theme-color);
  color: #fff;
- width: 1rem;
+ min-width: 1rem;
  height: 1rem;
  text-align: center;
  font-size: 0.68rem;
+ line-height: 1.1rem;
  font-weight: 200;
+ padding: 0 0.2rem;
+ box-sizing: border-box;
 }
 .item .like {
  top: -2px;
