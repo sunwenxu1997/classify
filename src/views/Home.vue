@@ -1,9 +1,11 @@
 <script setup>
-import { reactive, ref, computed } from 'vue'
+import { reactive, ref, computed, onActivated } from 'vue'
+import { appStore } from '@/stores/app'
+const $appStore = appStore()
 // 遍历获取 public/分类 下的文件目录
 const modules = import.meta.glob('/public/分类/**')
 const classifications = reactive([]) // 分类名
-const items = reactive([]) // 图片
+const items = reactive([]) // 所有物品
 const activeIndex = ref(0)
 Object.keys(modules).forEach((path) => {
   // 具体分类物品得一些属性
@@ -25,16 +27,27 @@ Object.keys(modules).forEach((path) => {
   if (!classifications.includes(item.className)) classifications.push(item.className)
   items.push(item)
 })
+onActivated(() => {
+  // 从本地存储中获取喜欢的物品数据
+  const likeItems = $appStore.likeItems || $appStore.getLikeItems()
+  // 每次进入及时更新 items
+  items.forEach((item) => {
+    item.like = likeItems.some((likeItem) => likeItem.imgPath === item.imgPath)
+  })
+})
 // 处理加工好的分类数据
 const classificationsTree = computed(() => {
   return classifications.map((text) => {
-    return {
-      text,
-      children: items.filter((item) => item.className === text)
-    }
+    return { text, children: items.filter((item) => item.className === text) }
   })
 })
-console.log(classifications, items)
+// 点击喜欢
+const clickItem = (item) => {
+  item.like = !item.like
+  // 每次点击喜欢后，在本地存储喜欢数量和对应喜欢的物品数据，缓存在localStorage中
+  $appStore.updateLikeItems(items.filter((item) => item.like))
+}
+// console.log(classifications, items)
 </script>
 
 <template>
@@ -47,8 +60,12 @@ console.log(classifications, items)
       <template #content>
         <div class="right-content">
           <div v-for="(cl, index) in classificationsTree" :key="index" v-show="activeIndex === index" class="items-box">
-            <div v-for="item in cl.children" :key="item.imgPath" class="item">
+            <div v-for="item in cl.children" :key="item.imgPath" class="item" @click="clickItem(item)">
               <div class="index" v-if="item.index">{{ item.index }}</div>
+              <div class="like">
+                <van-icon v-if="!item.like" name="like-o" />
+                <van-icon v-else name="like" color="var(--app-theme-color)" />
+              </div>
               <van-image :src="item.imgPath" lazy-load class="img" fit="cover" position="center">
                 <template v-slot:loading>
                   <van-loading type="spinner" size="20" />
@@ -62,50 +79,5 @@ console.log(classifications, items)
     </van-tree-select>
   </div>
 </template>
-<style scoped>
-.classify {
-  --img-width: clamp(5rem, calc((100vw - 150px) / 2), 200px);
-}
-.right-content {
-}
-.items-box {
-  padding: 1rem;
-  display: grid;
-  place-content: center;
-  grid-gap: 0.8rem;
-  grid-template-columns: repeat(auto-fill, var(--img-width));
-}
-.item {
-  position: relative;
-}
-.item .img {
-  width: var(--img-width);
-  height: var(--img-width);
-}
-.item .text {
-  text-align: center;
-  font-size: 0.8rem;
-  margin-top: 0.5rem;
-  /* 超出2行显示省略号 */
-  overflow: hidden;
-  text-overflow: ellipsis;
-  display: -webkit-box;
-  -webkit-line-clamp: 1;
-  -webkit-box-orient: vertical;
-  word-break: break-all;
-}
-.item .index {
-  position: absolute;
-  top: 0;
-  left: 0;
-  background-color: var(--app-theme-color);
-  color: #fff;
-  width: 1rem;
-  height: 1rem;
-  text-align: center;
-  font-size: 0.68rem;
-  font-weight: 200;
-  z-index: 5;
-  opacity: 0.9;
-}
+<style>
 </style>
