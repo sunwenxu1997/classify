@@ -5,7 +5,7 @@ import { appStore } from '@/stores/app'
 const $appStore = appStore()
 const $router = useRouter()
 const $route = useRoute()
-const active = ref(null)
+const active = ref(0)
 const routerArr = ['/', '/about']
 watch(() => $route.path, (path) => {
   active.value = routerArr.indexOf(path)
