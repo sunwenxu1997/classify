@@ -5,7 +5,7 @@
 >上传图片时建议尽量保持比例 `1:1` 的正方形图片；
 >图片不要太大，可在 [https://tinypng.com/](https://tinypng.com/) 压缩下，否则加载会很吃力
 
-<center><img src="https://sunwenxu1997.github.io/classify/images/classfiy_1.gif"  width="800"></center>
+<center><img src="https://sunwenxu1997.github.io/classify/images/classfiy_1.gif"  width="300"></center>
 
 ## 功能
 1. 分类展示，可通过维护 `public/分类` 文件，用户自定义自己的左侧分类栏目。
@@ -13,7 +13,7 @@
 * `1-鸭舌帽(白).jpg`：内部图片同理,`1-`可以选择作为排序，也可以作为编号，会展示在内容的左上角；
 * 假如你不想展示具体名称，你可以直接定义`3-.jpg`即可不展示，但是其中得编号是必要得；（文件名总要有个东西在吧🙄）
 
-<center><img src="https://sunwenxu1997.github.io/classify/images/classfiy_2.png"  width="800"></center>
+<center><img src="https://sunwenxu1997.github.io/classify/images/classfiy_2.png"  width="300"></center>
 
 2. 用户的喜欢收藏
 * 通过在用户本地（localStorage）来存储用户喜欢的选项；
