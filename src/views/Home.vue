@@ -1,59 +1,3 @@
-<script setup>
-import { reactive, ref, computed, onActivated } from 'vue'
-import { appStore } from '@/stores/app'
-const $appStore = appStore()
-// 遍历获取 public/分类 下的文件目录
-const modules = import.meta.glob('/public/分类/**')
-const classifications = reactive([]) // 分类名
-const items = reactive([]) // 所有物品
-const activeIndex = ref(0)
-Object.keys(modules).forEach((path) => {
-  // 具体分类物品得一些属性
-  let item = {
-    className: path.split('/').slice(-2)[0], // 一级分类名称
-    imgPath: import.meta.env.BASE_URL + path.split('/public')[1], // 图片路径
-    text: path.split('/').slice(-1)[0].split('.')[0] // 图片名称除去.后缀
-  }
-
-  // 正则校验路径中是否存在-符号,所以路径中尽量避免不必要的 - 符号
-  const reg = /-/
-  if (reg.test(path)) {
-    item.className = path.split('/').slice(-2)[0].split('-')[1] // 一级分类名称不需要展示序号
-  }
-  if (reg.test(item.text)) {
-    item.index = item.text.split('-')[0] // 序号
-    item.text = item.text.split('-')[1] // 图片名称不需要展示序号
-  }
-  if (!classifications.includes(item.className)) classifications.push(item.className)
-  items.push(item)
-})
-onActivated(() => {
-  // 从本地存储中获取喜欢的物品数据
-  const likeItems = $appStore.likeItems || $appStore.getLikeItems()
-  // 每次进入及时更新 items
-  items.forEach((item) => {
-    item.like = likeItems.some((likeItem) => likeItem.imgPath === item.imgPath)
-  })
-})
-// 处理加工好的分类数据
-const classificationsTree = computed(() => {
-  return classifications.map((text) => {
-    return {
-      text,
-      children: items.filter((item) => item.className === text),
-      dot: items.some((item) => item.className === text && item.like)
-    }
-  })
-})
-// 点击喜欢
-const clickItem = (item) => {
-  item.like = !item.like
-  // 每次点击喜欢后，在本地存储喜欢数量和对应喜欢的物品数据，缓存在localStorage中
-  $appStore.updateLikeItems(items.filter((item) => item.like))
-}
-// console.log(classifications, items)
-</script>
-
 <template>
   <div class="classify">
     <van-tree-select
@@ -83,5 +27,42 @@ const clickItem = (item) => {
     </van-tree-select>
   </div>
 </template>
-<style>
-</style>
+<script setup>
+import { reactive, ref, computed, onActivated } from 'vue'
+import { appStore } from '@/stores/app'
+import { getClassifyFilesList } from '@/utils'
+const $appStore = appStore()
+const { classTitles, classItems } = getClassifyFilesList()
+const state = reactive({
+  classTitles,
+  classItems
+})
+const activeIndex = ref(0)
+// 根据获取的分类数据，生成树形结构
+const classificationsTree = computed(() => {
+  const list = state.classItems
+  return state.classTitles.map((text) => {
+    return {
+      text, // 分类名称
+      children: list.filter((item) => item.className === text), // 分类下的物品
+      dot: list.some((item) => item.className === text && item.like) // 是否有喜欢的物品
+    }
+  })
+})
+console.log(classificationsTree.value)
+onActivated(() => {
+  // 从本地存储中获取喜欢的物品数据
+  const likeItems = $appStore.likeItems || $appStore.getLikeItems()
+  // 每次进入及时更新 items
+  state.classItems.forEach((item) => {
+    item.like = likeItems.some((likeItem) => likeItem.imgPath === item.imgPath)
+  })
+})
+// 点击喜欢
+const clickItem = (item) => {
+  item.like = !item.like
+  // 每次点击喜欢后，在本地存储喜欢数量和对应喜欢的物品数据，缓存在localStorage中
+  $appStore.updateLikeItems(state.classItems.filter((item) => item.like))
+}
+</script>
+<style></style>
