@@ -1,6 +1,7 @@
 <template>
-  <div class="classify">
-    <van-tree-select
+  <div class="classify" style="height: calc(100vh - var(--van-tabbar-height))">
+    <DraggableTabs :list="classificationsTree" v-model:active="activeIndex"></DraggableTabs>
+    <!-- <van-tree-select
       v-model:main-active-index="activeIndex"
       height="calc(100vh - var(--van-tabbar-height))"
       :items="classificationsTree"
@@ -19,33 +20,34 @@
                   <van-loading type="spinner" size="20" />
                 </template>
               </van-image>
-              <div class="text" v-if="item.text">{{ item.text }}</div>
+              <div class="name" v-if="item.name">{{ item.name }}</div>
             </div>
           </div>
         </div>
       </template>
-    </van-tree-select>
+    </van-tree-select> -->
   </div>
 </template>
 <script setup>
 import { reactive, ref, computed, onActivated } from 'vue'
 import { appStore } from '@/stores/app'
 import { getClassifyFilesList } from '@/utils'
+import DraggableTabs from '@/components/DraggableTabs/index.vue'
 const $appStore = appStore()
 const { classTitles, classItems } = getClassifyFilesList()
 const state = reactive({
   classTitles,
   classItems
 })
-const activeIndex = ref(0)
+const activeIndex = ref(2)
 // 根据获取的分类数据，生成树形结构
 const classificationsTree = computed(() => {
   const list = state.classItems
-  return state.classTitles.map((text) => {
+  return state.classTitles.map((name) => {
     return {
-      text, // 分类名称
-      children: list.filter((item) => item.className === text), // 分类下的物品
-      dot: list.some((item) => item.className === text && item.like) // 是否有喜欢的物品
+      name, // 分类名称
+      children: list.filter((item) => item.className === name), // 分类下的物品
+      dot: list.some((item) => item.className === name && item.like) // 是否有喜欢的物品
     }
   })
 })
@@ -65,4 +67,10 @@ const clickItem = (item) => {
   $appStore.updateLikeItems(state.classItems.filter((item) => item.like))
 }
 </script>
-<style></style>
+<style scoped>
+.classify {
+  /* padding: 0.75rem;
+  box-sizing: border-box; */
+  overflow: hidden;
+}
+</style>
