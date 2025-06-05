@@ -1,6 +1,6 @@
 // 获取分类目录下的所有文件
 export function getClassifyFilesList() {
-  const modules = import.meta.glob('/public/分类/**', { eager: true })
+  const modules = import.meta.glob('../../public/分类/**', { eager: true })
   const classTitles = [] // 分类名称
   const classItems = [] // 分类下的所有物品
   Object.keys(modules).forEach((path) => {
