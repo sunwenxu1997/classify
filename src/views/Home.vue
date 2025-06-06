@@ -31,7 +31,7 @@
 <script setup>
 import { reactive, ref, computed, onActivated, onMounted, toRefs, onUpdated, onBeforeMount } from 'vue'
 import { appStore } from '@/stores/app'
-// import { getClassifyFilesList } from '@/utils'
+import { getClassifyFilesList } from '@/utils'
 import DraggableTabs from '@/components/DraggableTabs/index.vue'
 const $appStore = appStore()
 
@@ -51,8 +51,8 @@ onActivated(() => {
   })
 })
 onBeforeMount(() => {
-  console.log('1')
-  const { classTitles, classItems } = {  classTitles: [], classItems: [] }
+  console.log('1');
+  const { classTitles, classItems } = getClassifyFilesList()
   state.classTitles = classTitles
   state.classItems = classItems
   const list = state.classItems
@@ -67,7 +67,7 @@ onBeforeMount(() => {
   })
 })
 onMounted(() => {
-  console.log('2')
+  console.log('2');
 })
 // 点击喜欢
 const clickItem = (item) => {
