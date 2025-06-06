@@ -52,7 +52,7 @@ onActivated(() => {
 })
 onBeforeMount(() => {
   console.log('1')
-  const { classTitles, classItems } = getClassifyFilesList()
+  const { classTitles, classItems } = {  classTitles: [], classItems: [] }
   state.classTitles = classTitles
   state.classItems = classItems
   const list = state.classItems
