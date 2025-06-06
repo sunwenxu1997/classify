@@ -31,7 +31,7 @@
 <script setup>
 import { reactive, ref, computed, onActivated, onMounted, toRefs, onUpdated, onBeforeMount } from 'vue'
 import { appStore } from '@/stores/app'
-import { getClassifyFilesList } from '@/utils'
+// import { getClassifyFilesList } from '@/utils'
 import DraggableTabs from '@/components/DraggableTabs/index.vue'
 const $appStore = appStore()
 
