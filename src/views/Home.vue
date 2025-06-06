@@ -29,29 +29,19 @@
   </div>
 </template>
 <script setup>
-import { reactive, ref, computed, onActivated } from 'vue'
+import { reactive, ref, computed, onActivated, onMounted, toRefs, onUpdated, onBeforeMount } from 'vue'
 import { appStore } from '@/stores/app'
 import { getClassifyFilesList } from '@/utils'
 import DraggableTabs from '@/components/DraggableTabs/index.vue'
 const $appStore = appStore()
-const { classTitles, classItems } = getClassifyFilesList()
+
 const state = reactive({
-  classTitles,
-  classItems
+  classTitles: [],
+  classItems: [],
+  classificationsTree: []
 })
 const activeIndex = ref(2)
-// 根据获取的分类数据，生成树形结构
-const classificationsTree = computed(() => {
-  const list = state.classItems
-  return state.classTitles.map((name) => {
-    return {
-      name, // 分类名称
-      children: list.filter((item) => item.className === name), // 分类下的物品
-      dot: list.some((item) => item.className === name && item.like) // 是否有喜欢的物品
-    }
-  })
-})
-console.log(classificationsTree.value)
+const { classificationsTree } = toRefs(state)
 onActivated(() => {
   // 从本地存储中获取喜欢的物品数据
   const likeItems = $appStore.likeItems || $appStore.getLikeItems()
@@ -59,6 +49,25 @@ onActivated(() => {
   state.classItems.forEach((item) => {
     item.like = likeItems.some((likeItem) => likeItem.imgPath === item.imgPath)
   })
+})
+onBeforeMount(() => {
+  console.log('1')
+  const { classTitles, classItems } = getClassifyFilesList()
+  state.classTitles = classTitles
+  state.classItems = classItems
+  const list = state.classItems
+
+  // 根据获取的分类数据，生成树形结构
+  state.classificationsTree = state.classTitles.map((name) => {
+    return {
+      name, // 分类名称
+      children: list.filter((item) => item.className === name), // 分类下的物品
+      dot: list.some((item) => item.className === name && item.like) // 是否有喜欢的物品
+    }
+  })
+})
+onMounted(() => {
+  console.log('2')
 })
 // 点击喜欢
 const clickItem = (item) => {
